@@ -3,12 +3,15 @@ library(readxl)
 library(dplyr)
 library(tidyverse)
 library(ggplot2)
-library(maps)
 library(shinythemes)
+library(readxl)
+library(maps)
 
-
-owid_covid_data <- read_excel("owid-covid-data.xlsx")
 world_map <- map_data("world")
+CovidDenmark <- read_excel("CovidDenmark.xlsx")
+
+
+
 
 
 ui <- fluidPage(theme = shinytheme("superhero"),
@@ -19,9 +22,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
   sidebarLayout(
     sidebarPanel(
       selectInput(inputId = "continent", label = "Continent",
-                  choices = unique(c(owid_covid_data$continent))),
+                  choices = unique(c(CovidDenmark$continent))),
       selectInput(inputId = "country", label = "Country",
-                  choices = unique(c(owid_covid_data$location)))),
+                  choices = unique(c(CovidDenmark$location)))),
     mainPanel(
       tabsetPanel(
         tabPanel("All", plotOutput("ot")),
@@ -34,7 +37,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
 
 server<-function(input,output){
   output$ot<-renderPlot({
-    ggplot(filter(owid_covid_data, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
+    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
     
   })
   
