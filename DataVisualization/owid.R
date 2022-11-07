@@ -8,7 +8,6 @@ library(shinythemes)
 
 
 owid_covid_data <- read_excel("owid-covid-data.xlsx")
-distinctOwid <- read_excel("owid-covid-data.xlsx")
 world_map <- map_data("world")
 
 
