@@ -5,9 +5,7 @@ library(tidyverse)
 library(ggplot2)
 library(shinythemes)
 library(readxl)
-library(maps)
 
-world_map <- map_data("world")
 CovidDenmark <- read_excel("CovidDenmark.xlsx")
 
 
@@ -27,8 +25,8 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                   choices = unique(c(CovidDenmark$location)))),
     mainPanel(
       tabsetPanel(
-        tabPanel("All", plotOutput("ot")),
-        tabPanel("Map", plotOutput("map"))
+        tabPanel("Plots", plotOutput("plots")),
+        tabPanel("Animated", plotOutput("aniamted"))
 
       )
     )
@@ -36,20 +34,15 @@ ui <- fluidPage(theme = shinytheme("superhero"),
 )
 
 server<-function(input,output){
-  output$ot<-renderPlot({
+  output$plots<-renderPlot({
     ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
     
   })
   
-  output$map<-renderPlot({
-    ggplot(world_map, aes(x = long, y = lat)) +
-      geom_polygon(aes( group = group, fill = region))+
-      scale_fill_viridis_d()+
-      theme_void()+
-      theme(legend.position = "none")
+  output$aniamted<-renderPlot({
+    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
     
   })
-  
 }
 
 
