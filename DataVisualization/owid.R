@@ -7,6 +7,8 @@ library(shinythemes)
 library(readxl)
 
 CovidDenmark <- read_excel("CovidDenmark.xlsx")
+CovidDenmark$date <- as.Date(CovidDenmark$date, format="%Y-%m-%d")
+
 
 
 
@@ -19,10 +21,11 @@ ui <- fluidPage(theme = shinytheme("superhero"),
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      selectInput(inputId = "continent", label = "Continent",
-                  choices = unique(c(CovidDenmark$continent))),
       selectInput(inputId = "country", label = "Country",
-                  choices = unique(c(CovidDenmark$location)))),
+                  choices = unique(c(CovidDenmark$location)), multiple = TRUE, selected = "Denmark"),
+      selectInput(inputId = "outcome", label = "Parameter",
+                  choices = c("Total Cases"=colnames(CovidDenmark)[5], "New Cases"=colnames(CovidDenmark)[6], "Total Deaths"=colnames(CovidDenmark)[8]))),
+    
     mainPanel(
       tabsetPanel(
         tabPanel("Plots", plotOutput("plots")),
@@ -33,15 +36,18 @@ ui <- fluidPage(theme = shinytheme("superhero"),
   )
 )
 
+
 server<-function(input,output){
   output$plots<-renderPlot({
-    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
     
-  })
-  
-  output$aniamted<-renderPlot({
-    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
+
     
+    ggplot(filter(CovidDenmark, location==input$country), aes(x=date,y=!!as.symbol(input$outcome), color=location)) + 
+      geom_line(size = 1) + 
+      scale_x_date(date_labels = "%m-%Y") +
+      xlab("Date") + 
+      ylab(input$outcome) +
+      theme_classic()
   })
 }
 
