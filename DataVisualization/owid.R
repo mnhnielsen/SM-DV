@@ -33,14 +33,16 @@ ui <- fluidPage(theme = shinytheme("superhero"),
   )
 )
 
+
 server<-function(input,output){
   output$plots<-renderPlot({
-    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
-    
+    #ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
+    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=date,y=total_vaccinations, color=location)) + geom_point()
   })
   
   output$aniamted<-renderPlot({
-    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
+    #ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
+    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=date,y=total_vaccinations, color=location)) + geom_point()
     
   })
 }
