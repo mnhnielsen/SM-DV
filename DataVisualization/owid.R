@@ -5,8 +5,10 @@ library(tidyverse)
 library(ggplot2)
 library(shinythemes)
 library(readxl)
+library(ggborderline)
 
 CovidDenmark <- read_excel("CovidDenmark.xlsx")
+covidWorld <- read_excel("owid-covid-data.xlsx")
 
 
 
@@ -19,10 +21,8 @@ ui <- fluidPage(theme = shinytheme("superhero"),
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      selectInput(inputId = "continent", label = "Continent",
-                  choices = unique(c(CovidDenmark$continent))),
       selectInput(inputId = "country", label = "Country",
-                  choices = unique(c(CovidDenmark$location)))),
+                  choices = unique(c(CovidDenmark$location)), multiple = TRUE, selected = "Denmark")),
     mainPanel(
       tabsetPanel(
         tabPanel("Plots", plotOutput("plots")),
@@ -33,16 +33,22 @@ ui <- fluidPage(theme = shinytheme("superhero"),
   )
 )
 
+datebreaks <- seq(as.Date("2020-02-27"), as.Date("2022-10-03"), by = "1 month")
+
+
 server<-function(input,output){
   output$plots<-renderPlot({
-    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
     
+    ggplot(filter(CovidDenmark, location==input$country), aes(x= as.Date(date), y=total_cases, color=location)) + 
+      geom_bar(stat = "identity", size = 1) + 
+      geom_borderline(aes(y=icu_patients * 10000), size=1, bordercolour = "black") +
+      scale_y_continuous(sec.axis = sec_axis(~./10000, "icu patients")) +
+      xlab("Date") + 
+      theme_classic() +
+      scale_x_date(breaks = datebreaks) +
+      theme(axis.text.x = element_text(angle = 30, hjust = 1))
   })
   
-  output$aniamted<-renderPlot({
-    ggplot(filter(CovidDenmark, continent==input$continent), aes(x=total_cases,y=total_deaths, color=location)) + geom_point()
-    
-  })
 }
 
 
