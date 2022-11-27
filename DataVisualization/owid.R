@@ -61,6 +61,8 @@ sidebarLayout(
         tabPanel("Plots", plotOutput("plots")),
         tabPanel("ICU Patients vs Cases", plotOutput("histo")),
         tabPanel("Stringency vs Pop. Rate", plotOutput("icu")),
+        tabPanel("New cases vs vaccinations", plotOutput("newVac")),
+        tabPanel("New tests vs positive rate", plotOutput("newTest")),
         tabPanel("New deaths vs Vaccination in Sweden", plotOutput("anim")),
         tabPanel("Animated", imageOutput(outputId = "aniamted", width = "100%")),
         tabPanel("Barchart", plotOutput(outputId = "barplot"), radioButtons(inputId = "var", label = "Choose desired Variable!",
@@ -159,6 +161,34 @@ server <- function(input, output) {
     
     ggplot(filter(CovidDenmark, location==input$country), aes( x = reproduction_rate, y=stringency_index / 13)) +
       geom_histogram(bins= 15, stat="identity",  size = 1)
+  })
+  output$newVac <- renderPlot({
+    ggplot(
+      filter(CovidDenmark, location == input$country),
+      aes(x = date, y = new_cases, color = location)) + 
+      geom_bar(aes(x = date, y = new_vaccinations),
+               stat = "identity",
+               fill = "pink",
+               colour = "pink") +
+      geom_line(size = 1) +
+      scale_x_date(date_labels = "%m-%Y") +
+      xlab("Date") +
+      theme_linedraw()
+  })
+  
+  output$newTest <- renderPlot({
+    ggplot(
+      filter(CovidDenmark, location == input$country),
+      aes(x = date, y = new_tests_smoothed_per_thousand, color = location)) + 
+      geom_bar(aes(x = date, y = positive_rate),
+               stat = "identity",
+               fill = "cyan",
+               colour = "purple") +
+      scale_y_continuous(sec.axis = sec_axis( ~ . * 0.0001, name = "Positive Rate")) +
+      geom_line(size = 1) +
+      scale_x_date(date_labels = "%m-%Y") +
+      xlab("Date") +
+      theme_linedraw()  
   })
 }
 
