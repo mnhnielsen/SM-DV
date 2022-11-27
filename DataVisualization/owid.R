@@ -13,6 +13,7 @@ library(gganimate)
 library(plotly)
 library(gifski)
 library(purrr)
+library(ggborderline)
 
 
 
@@ -58,15 +59,19 @@ sidebarLayout(
     mainPanel(
       tabsetPanel(
         tabPanel("Plots", plotOutput("plots")),
+        tabPanel("ICU Patients vs Cases", plotOutput("histo")),
+        tabPanel("Stringency vs Pop. Rate", plotOutput("icu")),
         tabPanel("New deaths vs Vaccination in Sweden", plotOutput("anim")),
         tabPanel("Animated", imageOutput(outputId = "aniamted", width = "100%")),
-        tabPanel("Lasse-Barchart", plotOutput(outputId = "barplot"), radioButtons(inputId = "var", label = "Choose desired Variable!",
+        tabPanel("Barchart", plotOutput(outputId = "barplot"), radioButtons(inputId = "var", label = "Choose desired Variable!",
                                                                      choices = c("Total Deaths" = "total_deaths", "Total Vaccinations" = "total_vaccinations", "Total Cases" = "total_cases"), selected = "total_deaths"))
 
       )
     )
   )
 )
+
+datebreaks <- seq(as.Date("2020-02-27"), as.Date("2022-10-03"), by = "1 month")
 
 server <- function(input, output) {
 
@@ -139,7 +144,22 @@ server <- function(input, output) {
       theme_classic()
   })
 
-
+  output$histo<-renderPlot({
+    
+    ggplot(filter(CovidDenmark, location==input$country), aes(x= as.Date(date), y=new_cases, color=location)) + 
+      geom_histogram(stat = "identity", size = 1) + 
+      geom_borderline(aes(y=icu_patients * 100), size=1, bordercolour = "black") +
+      scale_y_continuous(sec.axis = sec_axis(~./100, "icu patients")) +
+      xlab("Date") + 
+      theme_classic() +
+      scale_x_date(breaks = datebreaks) +
+      theme(axis.text.x = element_text(angle = 30, hjust = 1))
+  })
+  output$icu<-renderPlot({
+    
+    ggplot(filter(CovidDenmark, location==input$country), aes( x = reproduction_rate, y=stringency_index / 13)) +
+      geom_histogram(bins= 15, stat="identity",  size = 1)
+  })
 }
 
 
