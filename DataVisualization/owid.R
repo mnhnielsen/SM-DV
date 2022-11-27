@@ -39,10 +39,10 @@ datebreaks <- seq(as.Date("2020-02-27"), as.Date("2022-10-03"), by = "1 month")
 server<-function(input,output){
   output$plots<-renderPlot({
     
-    ggplot(filter(CovidDenmark, location==input$country), aes(x= as.Date(date), y=total_cases, color=location)) + 
-      geom_bar(stat = "identity", size = 1) + 
-      geom_borderline(aes(y=icu_patients * 10000), size=1, bordercolour = "black") +
-      scale_y_continuous(sec.axis = sec_axis(~./10000, "icu patients")) +
+    ggplot(filter(CovidDenmark, location==input$country), aes(x= as.Date(date), y=new_cases, color=location)) + 
+      geom_histogram(stat = "identity", size = 1) + 
+      geom_borderline(aes(y=icu_patients * 100), size=1, bordercolour = "black") +
+      scale_y_continuous(sec.axis = sec_axis(~./100, "icu patients")) +
       xlab("Date") + 
       theme_classic() +
       scale_x_date(breaks = datebreaks) +

@@ -39,8 +39,8 @@ datebreaks <- seq(as.Date("2020-02-27"), as.Date("2022-10-03"), by = "1 month")
 server<-function(input,output){
   output$plots<-renderPlot({
     
-    ggplot(filter(CovidDenmark, location==input$country), aes( x = reproduction_rate, y=stringency_index, color=location)) +
-      geom_histogram(stat = "identity", size = 1)
+    ggplot(filter(CovidDenmark, location==input$country), aes( x = reproduction_rate, y=stringency_index / 13)) +
+      geom_histogram(bins= 15, stat="identity",  size = 1)
   })
   
 }
