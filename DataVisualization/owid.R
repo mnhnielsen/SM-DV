@@ -25,20 +25,11 @@ ui <- fluidPage(
         multiple = TRUE,
         selected = "Denmark"
       ),
-      selectInput(
-        inputId = "outcome",
-        label = "Parameter",
-        choices = c(
-          "Total Cases" = colnames(CovidDenmark)[5],
-          "New Cases" = colnames(CovidDenmark)[6],
-          "Total Deaths" = colnames(CovidDenmark)[8]
-        )
-      )
     ),
     
     mainPanel(tabsetPanel(
-      tabPanel("Plots", plotOutput("plots")),
-      tabPanel("Map", plotOutput("map"))
+      tabPanel("New_cases/new_vaccinations", plotOutput("map")),
+      tabPanel("new_tests/positive_rate", plotOutput("map2"))
       
     ))
   )
@@ -46,20 +37,6 @@ ui <- fluidPage(
 
 
 server <- function(input, output) {
-  output$plots <- renderPlot({
-    ggplot(
-      filter(CovidDenmark, location == input$country),
-      aes(
-        x = date,
-        y = !!as.symbol(input$outcome),
-        color = location
-      )
-    ) + geom_line(size = 1) +
-      scale_x_date(date_labels = "%m-%Y") +
-      xlab("Date") +
-      ylab(input$outcome) +
-      theme_classic()
-  })
   output$map <- renderPlot({
     ggplot(
       filter(CovidDenmark, location == input$country),
@@ -72,6 +49,15 @@ server <- function(input, output) {
       scale_x_date(date_labels = "%m-%Y") +
       xlab("Date") +
       theme_linedraw()
+  })
+  
+  output$map2<-renderPlot({  
+    ggplot(filter(CovidDenmark, location==input$country), aes(x=date, y=new_tests_smoothed_per_thousand, color=location)) + geom_bar(aes(x=date, y=positive_rate), stat = "identity", fill="cyan",colour="purple") +
+      scale_y_continuous(sec.axis=sec_axis(~.*0.0001,name="Positive Rate")) + 
+      geom_line(size = 1) +
+      scale_x_date(date_labels = "%m-%Y") +
+      xlab("Date") + 
+      theme_linedraw()  
   })
 }
 shinyApp(ui, server)
