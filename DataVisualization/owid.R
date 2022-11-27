@@ -28,8 +28,8 @@ ui <- fluidPage(
     ),
     
     mainPanel(tabsetPanel(
-      tabPanel("New_cases/new_vaccinations", plotOutput("map")),
-      tabPanel("new_tests/positive_rate", plotOutput("map2"))
+      tabPanel("New_cases/new_vaccinations", plotOutput("newVac")),
+      tabPanel("new_tests/positive_rate", plotOutput("newTest"))
       
     ))
   )
@@ -37,7 +37,7 @@ ui <- fluidPage(
 
 
 server <- function(input, output) {
-  output$map <- renderPlot({
+  output$newVac <- renderPlot({
     ggplot(
       filter(CovidDenmark, location == input$country),
       aes(x = date, y = new_cases, color = location)) + 
@@ -51,7 +51,7 @@ server <- function(input, output) {
       theme_linedraw()
   })
   
-  output$map2 <- renderPlot({
+  output$newTest <- renderPlot({
     ggplot(
       filter(CovidDenmark, location == input$country),
       aes(x = date, y = new_tests_smoothed_per_thousand, color = location)) + 
