@@ -51,12 +51,18 @@ server <- function(input, output) {
       theme_linedraw()
   })
   
-  output$map2<-renderPlot({  
-    ggplot(filter(CovidDenmark, location==input$country), aes(x=date, y=new_tests_smoothed_per_thousand, color=location)) + geom_bar(aes(x=date, y=positive_rate), stat = "identity", fill="cyan",colour="purple") +
-      scale_y_continuous(sec.axis=sec_axis(~.*0.0001,name="Positive Rate")) + 
+  output$map2 <- renderPlot({
+    ggplot(
+      filter(CovidDenmark, location == input$country),
+      aes(x = date, y = new_tests_smoothed_per_thousand, color = location)) + 
+      geom_bar(aes(x = date, y = positive_rate),
+      stat = "identity",
+      fill = "cyan",
+      colour = "purple") +
+      scale_y_continuous(sec.axis = sec_axis( ~ . * 0.0001, name = "Positive Rate")) +
       geom_line(size = 1) +
       scale_x_date(date_labels = "%m-%Y") +
-      xlab("Date") + 
+      xlab("Date") +
       theme_linedraw()  
   })
 }
