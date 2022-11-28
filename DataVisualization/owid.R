@@ -124,7 +124,7 @@ server <- function(input, output) {
 
     data = data_r()
 
-    ggplot(data, aes(x = locations, y = y)) +
+    ggplot(data, aes(x = locations, y = y, fill=locations)) +
       geom_bar(stat = 'identity') +
       ylab(input$var)
 
