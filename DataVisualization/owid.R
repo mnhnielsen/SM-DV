@@ -129,12 +129,11 @@ server <- function(input, output) {
 
   })
   output$plots<-renderPlot({  
-    ggplot(filter(CovidDenmark, location==input$country), aes(x=date,y=!!as.symbol(input$outcome), color=location)) + 
-      geom_line(size = 1) + 
+    ggplot(filter(CovidDenmark, location==input$country), aes(x=date,y=!!as.symbol(input$outcome), color=location)) + geom_point() +
       scale_x_date(date_labels = "%m-%Y") +
       xlab("Date") + 
       ylab(input$outcome) +
-      theme_classic()
+      theme_classic() 
   })
   output$anim<-renderPlot({  
     ggplot(filter(CovidDenmark, location=="Sweden"), aes(x=date,y=new_vaccinations_smoothed_per_million, color=location)) + 
