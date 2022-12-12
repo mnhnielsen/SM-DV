@@ -14,6 +14,7 @@ library(plotly)
 library(gifski)
 library(purrr)
 library(ggborderline)
+library(scales)
 
 
 
@@ -129,10 +130,11 @@ server <- function(input, output) {
 
   })
   output$plots<-renderPlot({  
-    ggplot(filter(CovidDenmark, location==input$country), aes(x=date,y=!!as.symbol(input$outcome), color=location)) + geom_point() +
+    ggplot(filter(CovidDenmark, location==input$country), aes(x=date,y=!!as.symbol(input$outcome), color=location)) + geom_line() +
       scale_x_date(date_labels = "%m-%Y") +
       xlab("Date") + 
       ylab(input$outcome) +
+      #scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-5)) +
       theme_classic() 
   })
   output$anim<-renderPlot({  
