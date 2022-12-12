@@ -52,18 +52,42 @@ ui <- fluidPage(theme = shinytheme("superhero"),
 
 
 sidebarLayout(
-  sidebarPanel(
-    selectInput(inputId = "country", label = "Country",
-                choices = unique(c(CovidDenmark$location)), multiple = TRUE, selected = "Denmark"),
-    selectInput(inputId = "outcome", label = "Parameter",
-                choices = c("Total Cases per million"=colnames(CovidDenmark)[11], "New Cases per million"=colnames(CovidDenmark)[12], "Total Deaths per million"=colnames(CovidDenmark)[14]))),
+  sidebarPanel(),
     mainPanel(
       tabsetPanel(
-        tabPanel("Plots", plotOutput("plots")),
-        tabPanel("ICU Patients vs Cases", plotOutput("histo")),
-        tabPanel("Stringency vs Pop. Rate", plotOutput("icu")),
-        tabPanel("New cases vs vaccinations", plotOutput("newVac")),
-        tabPanel("New tests vs positive rate", plotOutput("newTest")),
+        tabPanel("Plots", plotOutput("plots"), checkboxGroupInput("country", 
+                                                                  h3("Select Countries"), 
+                                                                  choices = list("Denmark" = "Denmark", 
+                                                                                 "Sweden" = "Sweden", 
+                                                                                 "Norway" = "Norway"),
+                                                                  selected = "Denmark"),
+                                               radioButtons(inputId = "outcome", label = "Choose desired Outcome variable",
+                                                              choices = c("Total Cases per million" = "total_cases_per_million", "New Cases per million" = "new_cases_per_million", "Total Deaths per million" = "total_deaths_per_million"), selected = "total_cases_per_million")),
+        
+        tabPanel("ICU Patients vs Cases", plotOutput("histo"), checkboxGroupInput("countryHisto", 
+                                                                                  h3("Select Countries"), 
+                                                                                  choices = list("Denmark" = "Denmark", 
+                                                                                                 "Sweden" = "Sweden", 
+                                                                                                 "Norway" = "Norway"),
+                                                                                  selected = "Denmark")),
+        tabPanel("Stringency vs Pop. Rate", plotOutput("icu"), checkboxGroupInput("countryICU", 
+                                                                                  h3("Select Countries"), 
+                                                                                  choices = list("Denmark" = "Denmark", 
+                                                                                                 "Sweden" = "Sweden", 
+                                                                                                 "Norway" = "Norway"),
+                                                                                  selected = "Denmark")),
+        tabPanel("New cases vs vaccinations", plotOutput("newVac"), checkboxGroupInput("countryNewVac", 
+                                                                                       h3("Select Countries"), 
+                                                                                       choices = list("Denmark" = "Denmark", 
+                                                                                                      "Sweden" = "Sweden", 
+                                                                                                      "Norway" = "Norway"),
+                                                                                       selected = "Denmark")),
+        tabPanel("New tests vs positive rate", plotOutput("newTest"), checkboxGroupInput("countryNewTest", 
+                                                                                         h3("Select Countries"), 
+                                                                                         choices = list("Denmark" = "Denmark", 
+                                                                                                        "Sweden" = "Sweden", 
+                                                                                                        "Norway" = "Norway"),
+                                                                                         selected = "Denmark")),
         tabPanel("New deaths vs Vaccination in Sweden", plotOutput("anim")),
         tabPanel("Animated", imageOutput(outputId = "aniamted", width = "100%")),
         tabPanel("Barchart", plotOutput(outputId = "barplot"), radioButtons(inputId = "var", label = "Choose desired Variable!",
@@ -149,7 +173,7 @@ server <- function(input, output) {
 
   output$histo<-renderPlot({
     
-    ggplot(filter(CovidDenmark, location==input$country), aes(x=date, y=new_cases_per_million, color=location)) + 
+    ggplot(filter(CovidDenmark, location==input$countryHisto), aes(x=date, y=new_cases_per_million, color=location)) + 
       geom_histogram(stat = "identity", size = 1) + 
       geom_line(aes(y=icu_patients_per_million * 100), size=1, bordercolour = "black", color="blue") +
       scale_y_continuous(sec.axis = sec_axis(~./100, "Icu Patients per million")) +
@@ -160,14 +184,14 @@ server <- function(input, output) {
   })
   output$icu<-renderPlot({
     
-    ggplot(filter(CovidDenmark, location==input$country), aes( x = reproduction_rate, y=stringency_index / 13)) +
+    ggplot(filter(CovidDenmark, location==input$countryICU), aes( x = reproduction_rate, y=stringency_index / 13)) +
       geom_histogram(bins= 15, stat="identity",  size = 1) + 
       xlab("Reproduction Rate") + 
       ylab("Stringency Indexs")
   })
   output$newVac <- renderPlot({
     ggplot(
-      filter(CovidDenmark, location == input$country),
+      filter(CovidDenmark, location == input$countryNewVac),
       aes(x = date, y = new_cases_per_million, color = location)) + 
       geom_bar(aes(x = date, y = new_vaccinations_smoothed_per_million),
                stat = "identity",
@@ -182,7 +206,7 @@ server <- function(input, output) {
   
   output$newTest <- renderPlot({
     ggplot(
-      filter(CovidDenmark, location == input$country),
+      filter(CovidDenmark, location == input$countryNewTest),
       aes(x = date, y = new_tests_smoothed_per_thousand/15, color = location)) + 
       geom_bar(aes(x = date, y = positive_rate),
                stat = "identity",
