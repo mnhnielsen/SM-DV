@@ -1,0 +1,14 @@
+name: DataVisualization
+title: DataVisualization
+username:
+account: mnhtestenv
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7261409
+bundleId: 6644251
+url: https://mnhtestenv.shinyapps.io/DataVisualization/
+when: 1671193055.11175
+lastSyncTime: 1671193055.11176
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: owid-covid-data.xlsx
