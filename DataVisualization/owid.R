@@ -64,18 +64,10 @@ sidebarLayout(
                                                radioButtons(inputId = "outcome", label = "Choose desired Outcome variable",
                                                               choices = c("Total Cases per million" = "total_cases_per_million", "New Cases per million" = "new_cases_per_million", "Total Deaths per million" = "total_deaths_per_million"), selected = "total_cases_per_million")),
         
-        tabPanel("ICU Patients vs Cases", plotOutput("histo"), checkboxGroupInput("countryHisto", 
-                                                                                  h3("Select Countries"), 
-                                                                                  choices = list("Denmark" = "Denmark", 
-                                                                                                 "Sweden" = "Sweden", 
-                                                                                                 "Norway" = "Norway"),
-                                                                                  selected = "Denmark")),
-        tabPanel("Stringency vs Pop. Rate", plotOutput("icu"), checkboxGroupInput("countryICU", 
-                                                                                  h3("Select Countries"), 
-                                                                                  choices = list("Denmark" = "Denmark", 
-                                                                                                 "Sweden" = "Sweden", 
-                                                                                                 "Norway" = "Norway"),
-                                                                                  selected = "Denmark")),
+        tabPanel("ICU Patients vs Cases", plotOutput("histo"), radioButtons(inputId="countryHisto", label = "Select Country", choices = c("Denmark" = "Denmark", "Norway" = "Norway", "Sweden" = "Sweden"), selected = "Denmark")),
+        
+        tabPanel("Stringency vs Pop. Rate", plotOutput("icu"), radioButtons(inputId="countryICU", label = "Select Country", choices = c("Denmark" = "Denmark", "Norway" = "Norway", "Sweden" = "Sweden"), selected = "Denmark")),
+        
         tabPanel("New cases vs vaccinations", plotOutput("newVac"), checkboxGroupInput("countryNewVac", 
                                                                                        h3("Select Countries"), 
                                                                                        choices = list("Denmark" = "Denmark", 

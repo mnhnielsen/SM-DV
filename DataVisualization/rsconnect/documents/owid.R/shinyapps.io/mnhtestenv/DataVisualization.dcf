@@ -5,10 +5,10 @@ account: mnhtestenv
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7261409
-bundleId: 6644251
+bundleId: 6647564
 url: https://mnhtestenv.shinyapps.io/DataVisualization/
-when: 1671193055.11175
-lastSyncTime: 1671193055.11176
+when: 1671269021.05965
+lastSyncTime: 1671269021.05965
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: owid-covid-data.xlsx
